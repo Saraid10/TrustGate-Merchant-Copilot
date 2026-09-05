@@ -578,6 +578,7 @@ authority has been issued. Those read as the same outcome unless a system says t
 | Document | What it holds |
 |---|---|
 | [`JUDGE.md`](JUDGE.md) | Every claim, and the command that regenerates it |
+| [`docs/roadmap.md`](docs/roadmap.md) | Where this stands, what is next, and what is deliberately out of scope |
 | [`docs/decision-log.md`](docs/decision-log.md) | Every real choice, with the alternatives rejected and why |
 | [`docs/limitations.md`](docs/limitations.md) | Every deliberate cut, including the unflattering ones |
 | [`docs/positioning.md`](docs/positioning.md) | Indian payments context, labelled by the evidence behind it |
