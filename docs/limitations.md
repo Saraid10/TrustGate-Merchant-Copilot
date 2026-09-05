@@ -53,6 +53,32 @@ of duties is genuinely enforced — the server refuses an approval whose approve
 requester — but "a different person approved this" is only as true as the token's distribution,
 which in a testbed is not very.
 
+### How the actor gap would be closed
+
+Stating a gap is worth less than knowing its shape, so: this is the design, not a promise of a date.
+It is the largest item on `docs/roadmap.md` and it is deliberately not half-built here.
+
+**An `Actor` table, tenant-scoped, with a composite key on `(tenant_id, id)`** — the same shape
+every other parent in this schema already uses, so cross-tenant references stay impossible by
+foreign key rather than by a check somebody has to remember.
+
+**Credentials hashed at rest and resolved server-side.** The important move is not validating the
+actor id the caller sends; it is *removing the parameter*. The MCP server already takes its tenant
+and actor from process configuration rather than from tool arguments — the same reason no tool has
+an `amount` field. Extending that, a credential presented at connection resolves to an actor row,
+and `create_payment_request_tool` never sees an actor id at all. A field that does not exist cannot
+be forged, which is the argument the rest of this project rests on.
+
+**`active_delegation_for` then matches an authenticated identity.** Today it matches on a string.
+The query does not change; what changes is that the string arrived from a credential rather than
+from a caller.
+
+**The part that is genuinely hard is granting.** A delegation is currently granted *to* a string,
+so a grant can name an actor that does not exist and will never exist. Making the grantee a real row
+turns `delegate_actor_id` into a foreign key — which is the right outcome and also a migration over
+existing rows, plus a decision about what it means to grant authority to an agent that has not yet
+presented a credential. That question is the reason this is a medium slice rather than a small one.
+
 ---
 
 ## Provider integration
@@ -109,9 +135,10 @@ each belongs to a deployment posture this testbed does not claim to have.
 **No rate limiting anywhere.** The approver token and the internal admin token are compared in
 constant time, so there is no timing leak — but nothing slows down repeated attempts.
 
-**No request body size limit outside the webhook.** The Razorpay webhook route caps bodies at 64 KB.
-Every other POST route relies on Pydantic field limits, which bound the parsed values and not the
-bytes read.
+**Request bodies are capped, but nothing else about request volume is.** A pure-ASGI middleware
+refuses any body over 256 KB before the request costs anything, and the Razorpay webhook route keeps
+its own tighter 64 KB cap. What remains uncapped is *how many* requests arrive, which is the rate
+limiting gap below.
 
 **The checkout page is reachable by provider order id, without authentication.** This is how hosted
 checkout works — the payer opens a link — and it is scoped correctly: the tenant is derived from the
@@ -122,6 +149,25 @@ holding an order id can see that purchase's amount, merchant, and purpose.
 
 **No scheduled reconciliation.** Provider state is reconciled when a retry passes through the
 recovery path. Nothing sweeps periodically to catch a payment that drifted while nobody was looking.
+
+**Concurrent purchases for one tenant serialize on a single row, and that is a throughput ceiling.**
+Both the issuance and the consumption of a checkout authority take `FOR UPDATE` on the tenant row
+before doing anything else — `api/routes/checkout_authorities.py`, in `issue` and in `consume`. The
+lock is deliberate and it is proven: `test_policy_publication_lock_forces_authority_issuance_to_
+recheck_policy` holds a publisher's lock, asserts the issuer blocks on it, and asserts the resulting
+`409 POLICY_DRIFT`. Remove the lock and both assertions fail. It is what makes a policy published
+mid-issuance impossible to miss.
+
+The cost is that in payments a tenant *is* a merchant, so every concurrent purchase for one merchant
+queues behind the same row. That is a hot row by construction, and it bounds throughput per merchant
+rather than per system. No number is quoted for it here because none has been measured; that
+measurement, and the narrower lock that a real deployment would need, are both work this testbed has
+not done.
+
+**No performance figures at all.** No throughput, no latency distribution, no recovery objectives,
+no retention policy. Nothing here has been load-tested, and the correctness work above should not be
+read as implying it. Every figure this project quotes is a count of tests, mutations or scenarios —
+never a rate.
 
 ---
 
@@ -176,7 +222,8 @@ What is not attempted:
   delegation-chain work exist for, and nothing here addresses it.
 - **No agent identity.** `delegate_actor_id` is a string the caller supplies. Nothing proves the
   actor spending under a hop is the actor the hop was granted to. This is the same gap the identity
-  header has everywhere else in this project, and it is the largest one.
+  header has everywhere else in this project, and it is the largest one. Its shape is written up
+  under *How the actor gap would be closed*, above.
 - **Depth is bounded at 8 and the bound is arbitrary.** It exists so a chain stays enumerable and
   auditable, not because eight is a meaningful number.
 - **A revoked hop is not garbage collected.** Rows stay for the audit trail, so a long-lived tenant

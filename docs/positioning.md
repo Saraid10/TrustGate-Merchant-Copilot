@@ -134,9 +134,12 @@ each granted exactly their parent's budget satisfy every per-edge comparison in 
 designs and hold twice the parent's budget between them.
 
 TrustGate partitions the budget instead: what a node has promised downward is subtracted from what
-it holds, claimed atomically, and backed by a check constraint on the parent's own row. The
-mutation named `delegation-aggregate-partition` is the evidence that per-edge narrowing does not
-imply it - with the aggregate claim deleted, every other delegation test still passes.
+it holds, claimed atomically, and enforced by the `delegation_attenuates` trigger against the
+parent's own row. That per-edge narrowing does not imply this is not a stylistic claim - an earlier
+build maintained the aggregate in application code, and three children of 1,000 were written under a
+parent holding 1,000 by an insert that skipped the module while every per-edge check passed them.
+`test_siblings_written_straight_to_the_database_cannot_outgrow_their_parent` is what says the
+trigger closes that.
 
 This is a result from one project's testbed, not a published finding, and it is stated that way.
 What it is not is a claim to have solved delegation. There is no agent identity here and no
@@ -147,7 +150,7 @@ cross-tenant chain, which are the two hardest parts, and `docs/limitations.md` n
 - The money-critical facts of a purchase can be made structurally unreachable by an agent, rather
   than defended by filters that recognize attacks.
 - That property can be **verified** rather than asserted: 16 adversarial scenarios with a generated
-  attack matrix, and 18 deliberate breaks of the safety code that each require their guarding tests
+  attack matrix, and 53 deliberate breaks of the safety code that each require their guarding tests
   to fail.
 - Authority can be short-lived, single-use, and bound to the exact purchase it was issued for, so
   that a change to the policy or the purchase invalidates it.

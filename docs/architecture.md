@@ -1,6 +1,6 @@
 # Architecture
 
-**Current as of 2026-09-04.** 574 tests passing, `mypy --strict` clean across 56 source files,
+**Current as of 2026-09-05.** 606 tests passing, `mypy --strict` clean across 57 source files,
 53 mutations of the safety-critical code each caught by a guarding test.
 
 TrustGate is an authorization layer that sits between an AI buyer and payment execution. The agent

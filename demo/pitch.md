@@ -306,6 +306,6 @@ Only after a rehearsal take has come in under time.
 
 ## Numbers to have right
 
-593 tests · 53 mutations · 16 adversarial scenarios · 19 migrations · 5 MCP tools, none of them pay.
+606 tests · 53 mutations · 16 adversarial scenarios · 19 migrations · 5 MCP tools, none of them pay.
 
 Say the number the terminal is printing, not one you remember.

@@ -1194,9 +1194,15 @@ budget between them. `ck_delegation_budget_partitioned` refuses the sum on the p
 and `delegation.grant` claims the allocation with a conditional update so two siblings racing for
 the last of a budget cannot both find room.
 
-The mutation named `delegation-aggregate-partition` is the evidence that this is a real distinction
-rather than a stylistic one: with the aggregate claim deleted, every other delegation test still
-passes.
+That this is a real distinction rather than a stylistic one was established the hard way: while the
+aggregate was still maintained in Python, three children of 1,000 were written under a parent
+holding 1,000 by an insert that bypassed the module, and every per-edge check passed them.
+`test_siblings_written_straight_to_the_database_cannot_outgrow_their_parent` is the evidence now.
+
+A mutation named `delegation-aggregate-partition` carried this claim until the invariant moved into
+the trigger. It was retired deliberately, not lost: a mutation runner edits source files, so it
+cannot reach a trigger already applied to a schema. The evidence changed shape because the guarantee
+got stronger.
 
 Revocation cascades instead of propagating. A signed capability carries its own authority, so
 revoking it means recalling it - hence revocation sitting on the open-problems list for that whole

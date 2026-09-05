@@ -331,8 +331,11 @@ parent holding 1,000 by an insert that skipped the module, and every per-edge ch
 The claim is true now because the trigger does the work, and
 `test_siblings_written_straight_to_the_database_cannot_outgrow_their_parent` is what says so.
 
-The mutation named `delegation-aggregate-partition` is the evidence that this is a real distinction
-and not a stylistic one: delete the aggregate claim and every other delegation test still passes.
+That the distinction is real rather than stylistic is evidenced by the failure above, which is
+better evidence than a mutation because it actually happened. A mutation named
+`delegation-aggregate-partition` used to stand here; it was retired when the invariant moved out of
+Python and into the trigger, because a mutation runner edits source files and a trigger already
+applied to a schema does not notice. The guarantee got stronger and its evidence changed shape.
 
 **This is wired into authorization, and the boundary that remains is narrower than it was.** A
 purchase by an actor holding a delegation is checked against every hop above it before the payment
