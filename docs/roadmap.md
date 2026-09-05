@@ -29,7 +29,7 @@ asserted**: each safety guard is deleted on purpose and a test has to fail.
 
 | | |
 |---|---|
-| Tests | 601 passing |
+| Tests | 606 passing |
 | Mutations | 53, every one caught |
 | Tier A scenarios | 16, attack matrix generated from the registry |
 | Concurrency races | 9, run genuinely concurrently |
@@ -98,7 +98,7 @@ lives in. If it is the OneDrive copy, that link is the deliverable now.
 - **Intermittent test failure, observed once, not reproduced.** On 5 September a full-suite run
   failed `tests/test_delegation.py::test_a_spend_records_the_chain_that_authorized_it` together with
   `tests/test_mutation_anchors.py::…[the-spend-joins-its-purchase]`. Both passed in isolation
-  immediately afterwards, and two subsequent full runs were clean at 601 passed. Recorded rather
+  immediately afterwards, and two subsequent full runs were clean at 601 passed (606 since). Recorded rather
   than dismissed: the two failures were related, and an intermittent fault in the mutation-anchor
   machinery would undermine the one claim the whole project rests on. If it recurs, capture the
   seed and ordering before re-running — a green re-run destroys the evidence.
@@ -163,26 +163,56 @@ sequences of grants, spends and revocations:
 Small slice. It turns the strongest claim in the project from *tested* into *searched*, and the
 mutation suite already proves the tests would notice if the guards disappeared.
 
-### 4. Scheduled Razorpay reconciliation
+### 4. Rewrite `docs/threat-model.md`
+
+130 words, the shortest document in a security project, and structurally a scope list rather than a
+threat model: no attacker model, no capabilities, no attack paths. `docs/architecture.md`'s trust
+boundaries section is a better threat model than the threat model is.
+
+The problem is not that it is thin. It is that an interviewer opening files by name opens that one
+first, and its title writes a cheque the contents do not cover. It needs the attackers the system
+actually assumes — a supplier who controls catalogue text, a compromised agent, a caller who knows a
+tenant UUID, a replayed provider event — each with what they can do and what stops them. Every one
+of those already exists in the Tier A registry; the document just does not draw them together.
+
+Small, and it removes the sharpest available criticism of the documentation.
+
+### 5. Scheduled Razorpay reconciliation
 
 Low demo value, high *fintech* signal. Payment systems drift — an order created but never
 confirmed, a webhook that never arrived — and the job is repairing that drift. A reconciliation
 pass that finds and resolves it shows an understanding of the work that a feature list does not.
 
-### 5. Rate limiting on write routes
+### 6. Rate limiting on write routes
 
 Grants, revokes, approvals, checkout authority, order creation. Deliberately not done before the
 recording: a 429 mid-demo reads as a refusal. There is no reason to hold it back now.
 
-### 6. Per-tenant webhook secrets
+### 7. Per-tenant webhook secrets
 
 One secret serves every tenant today. Needs a pre-verification secret-selection design, because the
 tenant must be known before the signature can be checked — which is the interesting part.
 
-### 7. Structured observability
+### 8. Structured observability
 
 Events for granted, revoked, authority blocked, provider action blocked, webhook rejected — each
 carrying a correlation id and reason code. Cheap, additive, invisible in a demo.
+
+---
+
+## Known ceilings on the strongest claims
+
+Not gaps to close, but the honest bound on things worth leaning on. Better said here first than
+found by a reader.
+
+- **53 mutations are hand-picked.** They prove the invariants that could be named. A generated set
+  — `mutmut`, `cosmic-ray` — would bound the ones that could not, and would almost certainly find
+  survivors. That is a strengthening, not a repair, and the two answer different questions.
+- **The delegation result is one project's testbed finding**, not a published one, and
+  `docs/positioning.md` already says so. The set-intersection-is-wrong-for-money argument is sharp;
+  the evidence for it is a repository, not a paper.
+- **No performance figure exists anywhere**, and the tenant row lock puts a per-merchant ceiling on
+  throughput by construction. Documented in `docs/limitations.md` as of 5 Sept.
 
 ---
 
@@ -233,6 +263,11 @@ boxes open.
 
 ## Scope decisions, dated
 
+- **5 Sept 2026** — External review acted on. Three documents citing a retired mutation as live
+  evidence were repointed at the trigger and test that hold the invariant now; five drifted figures
+  corrected; the tenant-row throughput ceiling and the actor-authentication design written down
+  rather than left discoverable. A test now counts the figures, because this was the third time they
+  drifted and the second time a human found it before the suite did.
 - **5 Sept 2026** — Submitted. Two audiences were always in play; one is now finished, so the
   ranking by fintech signal stops competing with what demos well. Reconciliation in particular moves
   from "low demo value" to simply next. Nothing outstanding is urgent, and the failure mode changes
