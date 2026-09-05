@@ -21,7 +21,7 @@ only scarce resource here.
 `build-plan.md`'s own checklist asks the video for one thing: **"Architecture explanation rehearsed
 out loud."** So this script spends its middle on architecture and its evidence, and leaves the
 prose to the form. Draft answers for both form fields are in
-[`demo/form-answers.md`](form-answers.md) — the war stories live there now, in more detail than you
+[`docs/buildathon/form-answers.md`](../docs/buildathon/form-answers.md) — the war stories live there now, in more detail than you
 could ever speak.
 
 **What stays in the video is what only video can do:** money moving on screen when it shouldn't, a
@@ -275,7 +275,7 @@ words to 944 — **4:46 on camera**. Adding D gives 907 — **4:37**.
 **Never cut the opening, the attack, or the architecture beat.** Those three are the pitch.
 
 **Already cut from this script:** the approval beat, which ran `agent.demo "Buy Team credits"` and
-`agent.approve`; and the two remaining war stories, which now live in `form-answers.md`. If you have
+`agent.approve`; and the two remaining war stories, which now live in `docs/buildathon/form-answers.md`. If you have
 room, the approval line is under *If you have room* below.
 
 ## If you have room

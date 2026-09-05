@@ -248,7 +248,7 @@ Slice 1 - Foundation:
 - `.env.example`
 - `.github/workflows/ci.yml`
 - `Makefile`
-- `SLICE_TEMPLATE.md`
+- `docs/slice-template.md`
 - `docs/architecture.md`
 - `docs/threat-model.md`
 - `docs/decision-log.md`

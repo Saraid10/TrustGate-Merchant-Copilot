@@ -223,7 +223,7 @@ Lead with the thesis, never a feature list.
    to infer it from a deliberately thin agent.
 7. **Where it sits** — an authorization layer before payment intelligence and provider execution.
 8. **Quickstart** — clone, compose up, migrate, test. Must work verbatim.
-9. **Explicit non-goals and limitations** — carry over from `docs/buildathon-scope.md`.
+9. **Explicit non-goals and limitations** — carry over from `docs/buildathon/scope.md`.
 
 ### Tasks
 
