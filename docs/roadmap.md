@@ -36,6 +36,7 @@ asserted**: each safety guard is deleted on purpose and a test has to fail.
 | Migrations | 19, reverse and re-apply from `base` |
 | Provider | Razorpay Test Mode, **provider-delivered** webhook proven |
 | Branch | merged to `main` and pushed |
+| Submitted | 5 September 2026 — Razorpay AI Buildathon, Track 1 |
 
 ### Landed
 
@@ -65,6 +66,45 @@ asserted**: each safety guard is deleted on purpose and a test has to fail.
 
 ---
 
+## Now that it is submitted
+
+The buildathon deadline is met. This project always had two audiences, and only one of them is
+finished — the other is a payments engineer reading the repository during a hiring conversation.
+That has three consequences worth writing down before they get re-argued.
+
+**The ranking below is now the only ranking.** It was always ordered by what a payments reader would
+notice missing; that is no longer competing with what demos well. Items with low demo value and high
+fintech signal — reconciliation especially — move from "unfortunate" to "obviously next".
+
+**The demo artifacts become an archive, not live documents.** `demo/pitch.md`,
+`demo/voiceover.md` and `demo/teleprompter.txt` describe a recording that has been made and
+submitted. They should stop being maintained as though a take is still pending, and the tests that
+guard their internal consistency should be read as protecting a historical record rather than a
+plan. Decide once whether they stay in the repository at all — see *Repository presentation*.
+
+**Nothing is urgent, for the first time.** Every remaining item is optional, and the failure mode
+now is not missing a deadline but shipping something half-built that weakens a claim currently
+stated cleanly. An honestly stated gap has beaten a partial implementation twice on this project
+already.
+
+**One operational thing.** The submitted video link has to stay reachable for the whole judging
+window. Do not move, rename, or tidy away the file it points at, and do not clear the storage it
+lives in. If it is the OneDrive copy, that link is the deliverable now.
+
+---
+
+## Known issues
+
+- **Intermittent test failure, observed once, not reproduced.** On 5 September a full-suite run
+  failed `tests/test_delegation.py::test_a_spend_records_the_chain_that_authorized_it` together with
+  `tests/test_mutation_anchors.py::…[the-spend-joins-its-purchase]`. Both passed in isolation
+  immediately afterwards, and two subsequent full runs were clean at 601 passed. Recorded rather
+  than dismissed: the two failures were related, and an intermittent fault in the mutation-anchor
+  machinery would undermine the one claim the whole project rests on. If it recurs, capture the
+  seed and ordering before re-running — a green re-run destroys the evidence.
+
+---
+
 ## Next — ranked by what it is worth to a fintech reader
 
 **Where these came from.** (1) is this project's own stated limitation — said twice in
@@ -76,6 +116,12 @@ one did not. The rest is ordinary hardening that any payments reviewer would exp
 The ranking is by what a payments reader would notice **missing**, not by effort. Nothing here is
 required for the submission; all of it is what turns a strong testbed into something that survives
 being read closely.
+
+**Suggested order, which is not the ranking.** Do (3) first: it is the smallest, it needs no schema
+change, and it hardens the claim most likely to be probed. Then (1), which is the largest and
+touches the most surfaces, so it wants a clear run rather than being wedged between smaller things.
+(2) after that, because a signature over evidence is more convincing once the identity in that
+evidence means something. (4) through (7) are independent and can be taken in any order, or left.
 
 ### 1. Actor authentication
 
@@ -159,13 +205,24 @@ Kept here so it is decided once rather than re-argued.
 
 ## Repository presentation
 
-Separate from the system, and worth finishing.
+Separate from the system, and worth finishing. The submission is in, so the reader these are for
+is no longer a judge with four minutes but an engineer deciding whether to take the project
+seriously. **The test for each is the same: would someone who has never met this project be helped
+or confused by finding it?**
+
+Three of the demo files describe a recording that now exists and has been submitted. They are a
+record, not a plan. Whatever is decided, decide it once and write it below rather than leaving the
+boxes open.
 
 - [x] Buildathon submission artifacts moved to `docs/buildathon/` — 4 Sept
 - [x] `demo/architecture.html` — trust boundary, the authorized-but-cannot-pay gap, sibling budget
       partitioning, layer stack, enforcement ladder. One offline page, no server, no network — 5 Sept
-- [ ] `demo/pitch.md` (311 lines) — "what to say out loud" reads oddly in a repository; removing it
-      means removing `tests/test_pitch.py` too
+- [ ] `demo/pitch.md`, `demo/voiceover.md`, `demo/teleprompter.txt` — narration for a take that has
+      been recorded and submitted. Recommendation: move all three to `docs/buildathon/` beside the
+      other submission artifacts, where they read as *what was said on the day* rather than as
+      instructions to a reader. `tests/test_pitch.py` moves with them or goes; its guards protect a
+      historical record now, which is worth less than it was but is not worth nothing — the figures
+      in those files are still claims about this system
 - [ ] `JUDGE.md` — genuinely useful ("for a reader with four minutes" is a recruiter, not only a
       judge). Rename rather than delete
 - [ ] `demo/script.md` — reframe as `demo/walkthrough.md`, keeping the three guards that hang off it
@@ -176,6 +233,10 @@ Separate from the system, and worth finishing.
 
 ## Scope decisions, dated
 
+- **5 Sept 2026** — Submitted. Two audiences were always in play; one is now finished, so the
+  ranking by fintech signal stops competing with what demos well. Reconciliation in particular moves
+  from "low demo value" to simply next. Nothing outstanding is urgent, and the failure mode changes
+  from missing a deadline to weakening a cleanly stated claim by half-building around it.
 - **5 Sept 2026** — Property-based coverage of delegation adopted from a comparable project and
   ranked third, above reconciliation. Delegation is the claim the project is judged on and the only
   intricate arithmetic with no generated-case coverage; example tests there were written against
