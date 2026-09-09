@@ -1,0 +1,55 @@
+name: A claim does not hold
+description: Something the documentation asserts that the code does not actually do
+labels: ["claim"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the report the project most wants. Every claim here is supposed to be checkable,
+        and the ones worth finding are the ones that stopped being true without anyone noticing.
+
+        A stale number counts. So does a test that passes while proving less than its name says.
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: The claim
+      description: Quote it, and say which file and line it is on.
+      placeholder: |
+        README.md:52 - "302 tests passed with the check removed"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reality
+    attributes:
+      label: What is actually the case
+      description: >
+        What did you run or read, and what did it show? A command and its output is worth more
+        than a description of one.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of gap is it
+      options:
+        - A figure that has drifted from what it counts
+        - A behaviour described that the code does not have
+        - A test that does not prove what it claims to prove
+        - A defence described as covering something it does not cover
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: checked
+    attributes:
+      label: Already stated?
+      description: >
+        docs/limitations.md lists the deliberate cuts - the authentication gap in particular is
+        documented rather than undiscovered. Did you check whether this is one of them?
+      placeholder: Checked limitations.md; this is not in it.
+    validations:
+      required: false

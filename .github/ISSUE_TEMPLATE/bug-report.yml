@@ -1,0 +1,48 @@
+name: Bug report
+description: Something behaves differently from how it is supposed to
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If it is exploitable, do not file it here - see the security link on the previous screen.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what should have happened instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it
+      description: >
+        Commands, in order, from a clean clone if you can. A failing test is the most useful form
+        this can take, because the fix has to come with a regression anyway.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: "`git rev-parse HEAD`, so the report can be reproduced from the same source."
+      placeholder: ae7689e
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: >
+        OS, Python version, and how PostgreSQL is running. On Windows, note that `localhost` in
+        DATABASE_URL resolves to IPv6 first while Compose binds IPv4 only, which makes psycopg's
+        async connect hang rather than fail - use `127.0.0.1`.
+      placeholder: |
+        Windows 11, Python 3.12.14, PostgreSQL 16 via docker compose
+    validations:
+      required: true

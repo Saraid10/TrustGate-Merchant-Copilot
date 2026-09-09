@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Something exploitable
+    url: https://github.com/Saraid10/Trustgate/security/advisories/new
+    about: Report privately instead. Note there is no deployment to attack - this is a Test Mode testbed.
+  - name: Already-known gaps
+    url: https://github.com/Saraid10/Trustgate/blob/main/docs/limitations.md
+    about: Callers are not authenticated, and other deliberate cuts are listed here. Worth reading first.
+  - name: Where each claim is proven
+    url: https://github.com/Saraid10/Trustgate/blob/main/JUDGE.md
+    about: Every claim in the README mapped to the one command that demonstrates it.
