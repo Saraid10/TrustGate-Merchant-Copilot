@@ -3,6 +3,11 @@
 **An AI agent can ask to buy something. It can never decide what that costs, who gets paid, or
 whether the money actually moves.**
 
+> **In a hurry?** `make triage` is a guided tour whose first two steps need no database, no Docker,
+> and no credentials. [`JUDGE.md`](JUDGE.md) maps every claim on this page to the command that
+> proves it.
+
+[![CI](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml/badge.svg)](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)
@@ -14,10 +19,6 @@ TrustGate is a synthetic-data, Razorpay Test Mode testbed for bounded agent spen
 proposes a catalog purchase and never gains authority to rewrite the merchant, amount, currency,
 approval, or provider outcome. The agent proposes; TrustGate independently authorizes and records
 evidence.
-
-> **In a hurry?** `make triage` is a guided tour whose first two steps need no database, no Docker,
-> and no credentials. [`JUDGE.md`](JUDGE.md) maps every claim on this page to the command that
-> proves it.
 
 ## The problem, in one screen
 
