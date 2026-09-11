@@ -16,7 +16,9 @@ This project is a local payments-adjacent safety testbed. It models payment requ
 
 ## Out Of Scope For MVP
 
-- Real provider integrations.
+- Live provider integrations and real-money processing. Razorpay **Test Mode** is integrated
+  and exercised, including provider-delivered signed webhooks; any call made with a key that
+  does not begin `rzp_test_` is refused rather than sent.
 - Production authentication.
 - Real card, bank, wallet, UPI, or PII handling.
 - General prompt-injection defense claims.

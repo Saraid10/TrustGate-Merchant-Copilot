@@ -55,10 +55,10 @@ Also known, and not defended against:
 - **Real funds.** Test Mode only, deliberately: a project about bounded spending authority has no
   business holding live keys.
 
-Note that [`docs/threat-model.md`](docs/threat-model.md) on this branch is a scope list rather than
-an attacker model, and one of its lines is out of date — it records provider integrations as out of
-scope, which stopped being true when Razorpay Test Mode landed. A rewrite around named attackers is
-in progress. Until it lands, `limitations.md` is the document to trust.
+[`docs/threat-model.md`](docs/threat-model.md) states the scope this system was built against. It
+is a scope list rather than an attacker model - a rewrite around named attackers, their
+capabilities and what stops each is in progress and not yet on this branch - so for the specific
+question of what is *not* defended, `limitations.md` is the fuller document.
 
 ## What a good report looks like
 

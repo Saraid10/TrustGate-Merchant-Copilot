@@ -15,14 +15,14 @@ deliberate cut is in [`docs/limitations.md`](limitations.md).
 
 | Gate | Result |
 |---|---|
-| Full suite | 574 passed |
+| Full suite | 606 passed |
 | `mypy --strict` | clean, 57 source files |
 | `ruff check .` | clean |
 | `ruff format --check .` | clean |
 | `alembic check` | no undeclared model drift |
 | Mutation suite | 53 mutations, every one caught |
 | Optimized-mode safety smoke test | clean under `python -O` |
-| Migration `base` -> `head` round trip | clean, all eighteen revisions reversible |
+| Migration `base` -> `head` round trip | clean, all 19 revisions reversible |
 | Concurrency invariants raced | 9 PostgreSQL multi-session races passed |
 | Tier A scenarios | all 16 (A1-A15, A11a/A11b) passing; matrix generated from the registry |
 | Razorpay Test Mode | order creation proven against the real provider; signed webhooks carry a payment to CAPTURED; checkout page renders without authorizing |
