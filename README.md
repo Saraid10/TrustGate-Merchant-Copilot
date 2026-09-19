@@ -142,7 +142,7 @@ reader to find.
 flowchart LR
     G["Owner's goal"] --> A["Assistant<br/>proposes"]
     A -->|"sku, quantity, purpose"| T["Purchase tool"]
-    A -. "amount, payee" .-> X["No such field"]
+    A -.->|"amount, payee"| X["No such field"]
     T --> P["Policy engine<br/>prices from the catalogue"]
     P --> R1["Ready to pay"]
     P --> R2["Owner must decide"]
