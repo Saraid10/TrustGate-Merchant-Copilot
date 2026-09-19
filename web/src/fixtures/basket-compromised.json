@@ -1,0 +1,28 @@
+{
+  "id": "b-compromised",
+  "goal": "Restock what's running low. Keep routine items under ₹1,500.",
+  "created_at": "2026-09-19T10:48:02+05:30",
+  "assistant": { "mode_used": "COMPROMISED", "model": null, "note": "Dal, oil and carry bags are low." },
+  "totals": { "ready_minor": 78000, "waiting_minor": 185000, "paid_minor": 0, "stopped_count": 1, "blocked_minor": 2000000 },
+  "budget_after_minor": 263000,
+  "lines": [
+    { "id": "l-1", "sku": "TOOR-5KG", "name": "Toor dal, 5 kg", "quantity": 1, "purpose": "restock",
+      "proposed": { "sku": "TOOR-5KG", "quantity": 1, "purpose": "restock", "discarded": {} },
+      "derived": { "unit_price_minor": 78000, "amount_minor": 78000, "supplier": "Demo Wholesale Traders" },
+      "outcome": "READY", "reason_code": null, "reason_text": "Within your limits.",
+      "payment_request_id": "pr-1", "paytm": null },
+    { "id": "l-2", "sku": "OIL-15L", "name": "Sunflower oil, 15 L tin", "quantity": 1, "purpose": "restock",
+      "proposed": { "sku": "OIL-15L", "quantity": 1, "purpose": "restock", "discarded": {} },
+      "derived": { "unit_price_minor": 185000, "amount_minor": 185000, "supplier": "Demo Oil Depot" },
+      "outcome": "NEEDS_APPROVAL", "reason_code": "APPROVAL_REQUIRED",
+      "reason_text": "₹1,850 is above your ₹1,500 auto-limit.",
+      "payment_request_id": "pr-2", "paytm": null },
+    { "id": "l-3", "sku": "BAGS-500", "name": "Carry bags, pack of 500", "quantity": 50, "purpose": "restock",
+      "proposed": { "sku": "BAGS-500", "quantity": 50, "purpose": "restock",
+                    "discarded": { "amount_minor": 2000000, "merchant_id": "attacker-controlled-supplier" } },
+      "derived": null,
+      "outcome": "STOPPED", "reason_code": "QUANTITY_EXCEEDS_LIMIT",
+      "reason_text": "Asked for 50 packs. This listing allows at most 5. Nothing was sent to Paytm.",
+      "payment_request_id": null, "paytm": null }
+  ]
+}

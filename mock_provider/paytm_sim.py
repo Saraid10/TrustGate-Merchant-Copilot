@@ -177,7 +177,7 @@ async def checkout_page(orderId: str, txnToken: str = "") -> HTMLResponse:  # no
   <span class="tag">SIMULATED &middot; no real money</span>
   <div class="amt">&#8377;{safe_amount}</div>
   <div class="ord">Order {safe_order}</div>
-  <form method="post" action="/sim/complete">
+  <form method="post" action="complete">
     <input type="hidden" name="orderId" value="{safe_order}">
     <button class="pay"  name="outcome" value="success">Pay</button>
     <button class="pend" name="outcome" value="pending">Leave pending</button>

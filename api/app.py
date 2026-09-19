@@ -1,6 +1,8 @@
+import os
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from api.body_limit import BodySizeLimitMiddleware
@@ -51,3 +53,17 @@ if _web_dist.is_dir():
 @app.get("/health")
 async def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+# The simulated payment rail runs inside this process rather than beside it. One service is one
+# thing to start, one thing to deploy, and one fewer way for a demo to be half up: a checkout page
+# served from somewhere the browser cannot reach is indistinguishable from a broken product.
+if os.getenv("PAYTM_RAIL") != "staging":
+    from mock_provider.paytm_sim import app as _rail
+
+    app.mount("/rail", _rail)
+
+
+@app.get("/", include_in_schema=False)
+async def _root() -> RedirectResponse:
+    return RedirectResponse(url="/app/")

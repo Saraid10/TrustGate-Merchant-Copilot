@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+:root {
+  --tg-stage: #04193A;
+  --tg-stage-raised: #0A2450;
+  --tg-navy: #002970;
+  --tg-cyan: #00BAF2;
+  --tg-green: #16A36A;
+  --tg-amber: #E39A20;
+  --tg-red: #CF4439;
+  --tg-indigo: #5B6CFF;
+  --tg-app-bg: #F6F9FC;
+  --tg-ink: #12213A;
+  --tg-muted: #5D6E85;
+  --tg-line: #1D3A6B;
+}
+
+html, body, #root { height: 100%; }
+/* calt off: Inter otherwise turns "500 x 1" into "500 × 1", and the brief's copy uses a plain x. */
+body { font-family: "Inter Variable", system-ui, sans-serif; font-feature-settings: "calt" 0; background: var(--tg-stage); }
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* Tailwind's reset leaves buttons with an arrow cursor. */
+button:not(:disabled), [role="button"], [role="switch"] { cursor: pointer; }
+
+/* Torn bottom edge on the receipt. */
+.receipt-paper {
+  --tear: 7px;
+  mask:
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--tear)) 100%;
+}
+
+/* Stage backdrop: a faint grid and a soft lift behind the phone. Navy only, no meaning attached. */
+.stage {
+  background:
+    radial-gradient(ellipse 45% 60% at 20% 55%, rgba(10, 36, 80, 0.9), transparent 70%),
+    linear-gradient(rgba(29, 58, 107, 0.25) 1px, transparent 1px) 0 0 / 48px 48px,
+    linear-gradient(90deg, rgba(29, 58, 107, 0.25) 1px, transparent 1px) 0 0 / 48px 48px,
+    var(--tg-stage);
+}

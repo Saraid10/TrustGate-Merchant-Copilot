@@ -1,0 +1,20 @@
+{
+  "store": { "name": "Nandi Kirana Store", "area": "Jayanagar, Bengaluru", "synthetic": true },
+  "budget": { "daily_limit_minor": 500000, "spent_today_minor": 0, "approval_above_minor": 150000 },
+  "rail": "SIMULATED",
+  "assistant_mode": "LIVE",
+  "stock": [
+    { "sku": "TOOR-5KG", "name": "Toor dal, 5 kg", "on_hand": 1, "reorder_at": 3, "status": "LOW" },
+    { "sku": "OIL-15L", "name": "Sunflower oil, 15 L tin", "on_hand": 0, "reorder_at": 1, "status": "OUT" },
+    { "sku": "BAGS-500", "name": "Carry bags, pack of 500", "on_hand": 0, "reorder_at": 2, "status": "OUT" },
+    { "sku": "SUGAR-5KG", "name": "Sugar, 5 kg", "on_hand": 6, "reorder_at": 4, "status": "OK" },
+    { "sku": "ATTA-10KG", "name": "Whole wheat atta, 10 kg", "on_hand": 5, "reorder_at": 3, "status": "OK" },
+    { "sku": "RICE-25KG", "name": "Sona masoori rice, 25 kg", "on_hand": 3, "reorder_at": 1, "status": "OK" },
+    { "sku": "DETERGENT-5KG", "name": "Detergent powder, 5 kg", "on_hand": 3, "reorder_at": 2, "status": "OK" }
+  ],
+  "suggestions": [
+    { "text": "Restock what's running low. Keep routine items under ₹1,500.", "needs_live": false },
+    { "text": "Order 2 bags of sugar and toor dal for the week", "needs_live": false },
+    { "text": "Tel aur dal khatam ho raha hai, ₹2,000 ke andar mangwa do", "needs_live": true }
+  ]
+}
