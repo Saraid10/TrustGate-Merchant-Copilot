@@ -27,7 +27,7 @@ Paytm's own host and changes nothing else.
 Locally: `docker compose up -d`, then `alembic upgrade head`, `python -m agent.store_seed`,
 `python -m api.serve`, and open http://127.0.0.1:8000/app/
 
-[![CI](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml/badge.svg)](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml)
+[![CI](https://github.com/Saraid10/TrustGate-Merchant-Copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Saraid10/TrustGate-Merchant-Copilot/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)

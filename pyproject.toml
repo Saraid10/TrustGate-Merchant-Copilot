@@ -18,6 +18,10 @@ dependencies = [
     "mcp[cli]>=1.0,<2.0",
     "paytmchecksum>=1.7,<2.0",
     "psycopg[binary]>=3.2,<4.0",
+    # `paytmchecksum` imports `Crypto` and does not declare what provides it, so an install
+    # from this file alone gets a signing module that raises on import. It was declared here
+    # after CI found it: locally it was already present because it had been installed by hand.
+    "pycryptodome>=3.20,<4.0",
     "pydantic>=2.8,<3.0",
     "python-multipart>=0.0.32,<1.0",
     "python-dotenv>=1.0,<2.0",
