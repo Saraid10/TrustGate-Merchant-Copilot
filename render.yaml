@@ -1,0 +1,46 @@
+# One click from this repository to a running demo.
+services:
+  - type: web
+    name: trustgate-merchant-copilot
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: demo
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ENABLE_CONSOLE
+        value: "true"
+      - key: DEMO_CONTROLS
+        value: "true"
+      # The demo works with no model provider at all. Setting GROQ_API_KEY in the dashboard is
+      # what turns the live planner on; without it the offline planner runs and says so.
+      - key: ASSISTANT_MODE
+        value: OFFLINE
+      - key: TRUSTGATE_MODEL_BACKEND
+        value: groq
+      - key: GROQ_API_KEY
+        sync: false
+      - key: PAYTM_RAIL
+        value: simulated
+      - key: TRUSTGATE_API_ACTOR_ID
+        value: merchant-copilot
+      - key: MCP_ACTOR_ID
+        value: merchant-copilot-agent
+      - key: DEMO_APPROVER_ID
+        value: owner-nandi-kirana
+      - key: DEMO_APPROVER_TOKEN
+        generateValue: true
+      - key: INTERNAL_ADMIN_TOKEN
+        generateValue: true
+      - key: PROVIDER_WEBHOOK_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: trustgate-db
+          property: connectionString
+
+databases:
+  - name: trustgate-db
+    plan: free
