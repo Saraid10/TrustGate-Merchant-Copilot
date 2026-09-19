@@ -29,7 +29,7 @@ asserted**: each safety guard is deleted on purpose and a test has to fail.
 
 | | |
 |---|---|
-| Tests | 654 passing |
+| Tests | 655 passing |
 | Mutations | 53, every one caught |
 | Tier A scenarios | 16, attack matrix generated from the registry |
 | Concurrency races | 9, run genuinely concurrently |

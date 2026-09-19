@@ -5,7 +5,7 @@
 **A shop owner tells an assistant to restock. The assistant proposes. The server decides.**
 
 [![CI](https://github.com/Saraid10/TrustGate-Merchant-Copilot/actions/workflows/ci.yml/badge.svg)](https://github.com/Saraid10/TrustGate-Merchant-Copilot/actions/workflows/ci.yml)
-![Tests](https://img.shields.io/badge/tests-654_passing-2ea043)
+![Tests](https://img.shields.io/badge/tests-655_passing-2ea043)
 ![Typing](https://img.shields.io/badge/mypy-strict-2A6DB0)
 ![Python](https://img.shields.io/badge/Python-3.12_to_3.14-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-async-009688?logo=fastapi&logoColor=white)
@@ -178,7 +178,7 @@ More detail in [`docs/architecture.md`](docs/architecture.md) and
 
 | Gate | Result |
 |---|---|
-| Full suite | 654 tests passing, against real PostgreSQL |
+| Full suite | 655 tests passing, against real PostgreSQL |
 | `mypy --strict` | clean, 66 source files |
 | `ruff check` and `ruff format --check` | clean |
 | `alembic check` | no undeclared drift across 20 migrations |

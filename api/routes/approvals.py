@@ -108,6 +108,12 @@ async def grant_approval(
             expires_at=policy.expiry,
         )
         session.add(approval)
+        # The owner approving is the thing that authorizes the amount. The payment was created
+        # without one, because the policy engine only records an authorized amount when it decides
+        # ALLOW by itself. Leaving it unset here meant a payment could reach AUTHORIZED carrying no
+        # authorized amount at all, and the capture that should follow was then refused for
+        # exceeding an authorization that had never been written down.
+        payment.authorized_amount_minor = payment_request.amount_minor
         await session.flush()
         await transition(
             session,

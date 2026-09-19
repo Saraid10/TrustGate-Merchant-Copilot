@@ -26,6 +26,7 @@ from models.domain import (
     Basket,
     BasketLine,
     DailySpendReservation,
+    Payment,
     PaymentRequest,
 )
 
@@ -257,3 +258,30 @@ async def test_budget_after_matches_the_reservations_the_policy_engine_created(
     # The catalogue route reserves each allowed line before the basket is rendered.  The store
     # endpoint therefore already includes this basket; adding visible lines again would double it.
     assert body["budget_after_minor"] == spent
+
+
+async def test_approving_records_the_amount_the_owner_authorised(
+    store_client: AsyncClient, async_session: AsyncSession, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The approval is what authorises the amount, and the capture later depends on it.
+
+    A payment created for a line that needs approval carries no authorised amount, because the
+    policy engine records one only when it decides ALLOW by itself. Until this was written down at
+    the moment of approval, the line paid, Paytm confirmed it, and the capture was then refused for
+    exceeding an authorisation that had never been recorded. It surfaced as a 500 on the single
+    beat of the demo the owner is part of, and only after the money had already moved.
+    """
+
+    monkeypatch.setenv("ASSISTANT_MODE", "OFFLINE")
+    created = await store_client.post("/api/v1/merchant/baskets", json={"goal": MORNING_GOAL})
+    waiting = next(line for line in created.json()["lines"] if line["outcome"] == "NEEDS_APPROVAL")
+
+    approved = await store_client.post(f"/api/v1/merchant/lines/{waiting['id']}/approve")
+    assert approved.status_code == 200, approved.text
+
+    payment = await async_session.scalar(
+        select(Payment).where(Payment.payment_request_id == UUID(waiting["payment_request_id"]))
+    )
+    assert payment is not None
+    assert payment.state == "AUTHORIZED"
+    assert payment.authorized_amount_minor == waiting["derived"]["amount_minor"]
