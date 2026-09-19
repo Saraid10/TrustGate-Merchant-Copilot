@@ -81,7 +81,9 @@ const s = await run(`(() => ({
 check("listing from the discard event is shown and marked", !!s.mark && s.mark.startsWith("TRUSTGATE_DEMO_INJECTION:"), s.mark);
 check("stopped card names the source", !!s.cardNote, s.cardNote);
 check("₹20,000 strip shown", !!s.stripe, s.stripe);
-check("live record filled from the event stream", s.log >= 9, String(s.log));
+// Eight, not the stand-in's nine. The stand-in narrates the pricing step; the real server
+// only shows rows it actually wrote, and never invents one to make the panel read better.
+check("live record filled from the event stream", s.log >= 8, String(s.log));
 const banner = await until(async () => run(`document.querySelector('[role=status]')?.innerText`), 5000);
 check("banner appears", !!banner && banner.includes("₹20,000 did not move"));
 await shot(`${W}-real-compromised`);

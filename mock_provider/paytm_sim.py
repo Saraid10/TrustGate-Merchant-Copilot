@@ -179,9 +179,9 @@ async def checkout_page(orderId: str, txnToken: str = "") -> HTMLResponse:  # no
   <div class="ord">Order {safe_order}</div>
   <form method="post" action="complete">
     <input type="hidden" name="orderId" value="{safe_order}">
-    <button class="pay"  name="outcome" value="success">Pay</button>
-    <button class="pend" name="outcome" value="pending">Leave pending</button>
-    <button class="fail" name="outcome" value="failure">Fail</button>
+    <button class="pay"  id="sim-pay"     name="outcome" value="success">Pay</button>
+    <button class="pend" id="sim-pending" name="outcome" value="pending">Leave pending</button>
+    <button class="fail" id="sim-fail"    name="outcome" value="failure">Fail</button>
   </form>
 </div></body></html>"""
     )
