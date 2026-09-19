@@ -661,7 +661,7 @@ def test_missing_approval_behavior_is_identical_under_python_optimized_mode(
             **os.environ,
             "DATABASE_URL": os.getenv(
                 "DATABASE_URL",
-                "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5432/payment_safety",
+                "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5433/payment_safety",
             ),
         },
     )

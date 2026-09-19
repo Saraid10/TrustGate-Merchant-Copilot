@@ -1,4 +1,7 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from api.body_limit import BodySizeLimitMiddleware
 from api.routes import (
@@ -10,7 +13,9 @@ from api.routes import (
     delegations,
     evidence,
     internal_policies,
+    merchant,
     payment_requests,
+    paytm,
     razorpay,
     webhooks,
 )
@@ -32,6 +37,15 @@ app.include_router(internal_policies.router)
 app.include_router(razorpay.router)
 app.include_router(webhooks.router)
 app.include_router(console.router)
+app.include_router(merchant.router)
+app.include_router(paytm.router)
+
+# The built merchant UI is served by this application rather than a separate Vite server.  That
+# keeps its API calls same-origin and lets a provider callback return to /app inside the checkout
+# frame without crossing origins.
+_web_dist = Path(__file__).resolve().parents[1] / "web" / "dist"
+if _web_dist.is_dir():
+    app.mount("/app", StaticFiles(directory=_web_dist, html=True), name="merchant-ui")
 
 
 @app.get("/health")

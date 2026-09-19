@@ -4,13 +4,21 @@ import os
 from collections.abc import AsyncIterator
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.engine import make_url
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5432/payment_safety",
+    "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5433/payment_safety",
 )
 
-engine = create_async_engine(DATABASE_URL)
+# Docker publishes this project's Postgres port on IPv4. On Windows, `localhost` may resolve to
+# IPv6 first and leave an async connection attempt waiting instead of failing promptly. Treat the
+# local alias as the explicit loopback address; remote hosts remain entirely untouched.
+_database_url = make_url(DATABASE_URL)
+if _database_url.host == "localhost":
+    _database_url = _database_url.set(host="127.0.0.1")
+
+engine = create_async_engine(_database_url)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 
 

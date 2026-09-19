@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from logging.config import fileConfig
 
+from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
@@ -13,11 +14,13 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
+load_dotenv()
+
 config.set_main_option(
     "sqlalchemy.url",
     os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5432/payment_safety",
+        "postgresql+psycopg://payment_safety:payment_safety@127.0.0.1:5433/payment_safety",
     ),
 )
 target_metadata = Base.metadata

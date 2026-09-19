@@ -113,7 +113,12 @@ class BodySizeLimitMiddleware:
         async def replay() -> Message:
             nonlocal replayed
             if replayed:
-                return {"type": "http.disconnect"}
+                # Hand back the real transport once the body has been delivered, rather than
+                # fabricating a disconnect. A streaming response watches `receive` to learn when
+                # the client goes away; telling it the client left immediately ends the stream
+                # after its first message, which is how a server-sent events endpoint appears to
+                # open successfully and then deliver nothing.
+                return await receive()
             replayed = True
             return {"type": "http.request", "body": body, "more_body": False}
 

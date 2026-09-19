@@ -5,6 +5,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import (
+    BigInteger,
     Boolean,
     CheckConstraint,
     DateTime,
@@ -13,6 +14,7 @@ from sqlalchemy import (
     Index,
     Integer,
     LargeBinary,
+    SmallInteger,
     String,
     Text,
     UniqueConstraint,
@@ -320,7 +322,7 @@ class PaymentRequest(Base):
             name="ck_payment_request_catalog_snapshot_complete",
         ),
         CheckConstraint(
-            "source IN ('API', 'MCP_AGENT', 'ATTACK_HARNESS')",
+            "source IN ('API', 'MCP_AGENT', 'ATTACK_HARNESS', 'MERCHANT_COPILOT')",
             name="ck_payment_request_source",
         ),
     )
@@ -716,3 +718,127 @@ class AuditEvent(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )
+
+
+class Basket(Base):
+    """One merchant goal, and the purchase requests its lines became.
+
+    A basket groups ordinary single-item purchase requests rather than introducing a second kind of
+    purchase. Policy, delegation, approval, and checkout authority are therefore reached by exactly
+    the path they already have, and nothing about a basket can widen what one line may do.
+    """
+
+    __tablename__ = "basket"
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_basket_tenant"),
+        CheckConstraint("char_length(goal) BETWEEN 1 AND 300", name="ck_basket_goal_length"),
+        CheckConstraint(
+            "assistant_mode IN ('LIVE', 'OFFLINE', 'COMPROMISED')",
+            name="ck_basket_assistant_mode",
+        ),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(
+        Uuid, ForeignKey("tenant.id", ondelete="RESTRICT"), nullable=False
+    )
+    goal: Mapped[str] = mapped_column(Text, nullable=False)
+    assistant_mode: Mapped[str] = mapped_column(String(16), nullable=False)
+    model: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    note: Mapped[str] = mapped_column(Text, nullable=False, server_default="")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class BasketLine(Base):
+    """One proposed line: either a purchase request, or the reason it never became one.
+
+    The `CHECK` is the point of this table. A line refused on the way in has no payment request to
+    point at, because the catalog path rejects it before one exists. Two nullable columns with no
+    constraint would admit a third state, neither set, that means nothing and would have to be
+    interpreted by every reader forever.
+    """
+
+    __tablename__ = "basket_line"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "basket_id"],
+            ["basket.tenant_id", "basket.id"],
+            name="fk_basket_line_basket_tenant",
+            ondelete="CASCADE",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "payment_request_id"],
+            ["payment_request.tenant_id", "payment_request.id"],
+            name="fk_basket_line_request_tenant",
+            ondelete="RESTRICT",
+        ),
+        UniqueConstraint("basket_id", "position", name="uq_basket_line_position"),
+        CheckConstraint(
+            "(payment_request_id IS NULL) <> (rejection_reason IS NULL)",
+            name="ck_basket_line_request_xor_rejection",
+        ),
+        Index("ix_basket_line_basket", "tenant_id", "basket_id"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    basket_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    position: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    proposed: Mapped[dict[str, Any]] = mapped_column(JSONB, nullable=False)
+    discarded: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, nullable=False, server_default=text("'{}'::jsonb")
+    )
+    payment_request_id: Mapped[UUID | None] = mapped_column(Uuid, nullable=True)
+    rejection_reason: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class PaytmOrder(Base):
+    """Server-side binding between one checkout authority and one Paytm order.
+
+    `uq_paytm_order_one_per_authority` is the safety property in one line: two concurrent dispatches
+    both reading "no order yet" is exactly the race a unique index exists to lose.
+    """
+
+    __tablename__ = "paytm_order"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "payment_id"],
+            ["payment.tenant_id", "payment.id"],
+            name="fk_paytm_order_payment_tenant",
+            ondelete="RESTRICT",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "checkout_authority_id"],
+            ["checkout_authority.tenant_id", "checkout_authority.id"],
+            name="fk_paytm_order_authority_tenant",
+            ondelete="RESTRICT",
+        ),
+        UniqueConstraint("order_id", name="uq_paytm_order_order_id"),
+        UniqueConstraint(
+            "tenant_id", "checkout_authority_id", name="uq_paytm_order_one_per_authority"
+        ),
+        CheckConstraint("amount_minor > 0", name="ck_paytm_order_amount_positive"),
+        CheckConstraint(
+            "status IN ('CREATED', 'PENDING', 'SUCCESS', 'FAILED', 'MISMATCH')",
+            name="ck_paytm_order_status",
+        ),
+        CheckConstraint("order_id ~ '^[A-Za-z0-9]{1,50}$'", name="ck_paytm_order_id_alphanumeric"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    tenant_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    payment_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    checkout_authority_id: Mapped[UUID] = mapped_column(Uuid, nullable=False)
+    order_id: Mapped[str] = mapped_column(String(50), nullable=False)
+    amount_minor: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, server_default="CREATED")
+    paytm_txn_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
