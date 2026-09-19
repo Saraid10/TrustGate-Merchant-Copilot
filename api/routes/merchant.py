@@ -279,6 +279,11 @@ async def create_basket(
                 tenant_id=tenant.id,
                 correlation_id=basket.id,
                 event_kind="planner_line_proposed",
+                # The proposal as it arrived, discarded fields included. The panel draws the gate
+                # from this one row: fields it recognises pass, and anything else is struck
+                # through and detached. Recording only the surviving fields would have made the
+                # trail read as though the assistant had never asked for an amount or a payee,
+                # which is the opposite of what happened.
                 payload={
                     "line_id": str(line_id),
                     "position": position,
@@ -286,6 +291,7 @@ async def create_basket(
                     "name": known[0] if known else kept["sku"],
                     "quantity": kept["quantity"],
                     "purpose": kept["purpose"],
+                    **dict(raw.discarded),
                 },
             )
         )

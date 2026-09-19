@@ -37,4 +37,6 @@ export function injectedSuppliers(events: HoodEvent[]): Record<string, string> {
 }
 
 /** Keys that are metadata about a proposal, not part of it. Never drawn as proposal fields. */
-export const META_KEYS = new Set(["source_listing"]);
+// Bookkeeping the panel needs but the gate never sees. Everything else in a proposal event
+// is a field the assistant actually asked for, and is drawn as kept or discarded.
+export const META_KEYS = new Set(["source_listing", "line_id", "position", "name"]);
