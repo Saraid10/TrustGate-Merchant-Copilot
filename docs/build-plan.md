@@ -15,8 +15,8 @@ deliberate cut is in [`docs/limitations.md`](limitations.md).
 
 | Gate | Result |
 |---|---|
-| Full suite | 606 passed |
-| `mypy --strict` | clean, 57 source files |
+| Full suite | 663 passed |
+| `mypy --strict` | clean, 66 source files |
 | `ruff check .` | clean |
 | `ruff format --check .` | clean |
 | `alembic check` | no undeclared model drift |
