@@ -3,6 +3,9 @@ services:
   - type: web
     name: trustgate-merchant-copilot
     runtime: docker
+    # Closest free region to a Bengaluru audience. The panel streams events, so the round trip
+    # is visible rather than academic.
+    region: singapore
     plan: free
     healthCheckPath: /health
     envVars:
@@ -44,3 +47,4 @@ services:
 databases:
   - name: trustgate-db
     plan: free
+    region: singapore

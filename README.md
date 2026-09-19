@@ -7,6 +7,26 @@ whether the money actually moves.**
 > and no credentials. [`JUDGE.md`](JUDGE.md) maps every claim on this page to the command that
 > proves it.
 
+## The merchant copilot
+
+A shop owner tells an assistant to restock. One sentence produces three different endings: one
+purchase goes through, one waits for the owner, and one is refused because a supplier wrote an
+instruction into a product description. The refusal is not the assistant behaving well. It is the
+server having nowhere to put an amount or a payee.
+
+Running it yourself takes one click. The blueprint in [`render.yaml`](render.yaml) creates the
+database and the service, applies the migrations, and seeds the store at boot:
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Saraid10/TrustGate-Merchant-Copilot)
+
+The demo needs no payment credentials and no model provider. It runs on a simulated Paytm rail
+built against the real API shape, and on the offline planner, which says so on screen rather than
+pretending. Setting `GROQ_API_KEY` turns the live planner on; `PAYTM_RAIL=staging` moves it to
+Paytm's own host and changes nothing else.
+
+Locally: `docker compose up -d`, then `alembic upgrade head`, `python -m agent.store_seed`,
+`python -m api.serve`, and open http://127.0.0.1:8000/app/
+
 [![CI](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml/badge.svg)](https://github.com/Saraid10/Trustgate/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
